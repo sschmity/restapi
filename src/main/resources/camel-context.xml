@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:spring="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean id="myBean" class="com.clearstream.SampleBean">
+            <property name="say" value="This is an injection" />
+    </bean>
+    <bean id="myBean2" class="com.clearstream.SampleBean">
+        <property name="say" value="{{beaninjection.props}}" />
+    </bean>
+
+    <camelContext id="SampleCamel" xmlns="http://camel.apache.org/schema/spring">
+        <route id="eurex-route">
+            <from uri="timer:hello?period={{timer.period}}"/>
+            <to uri="bean:myBean?method=saySomething"/>
+            <!--bean ref="myBean" method="saySomething"/-->
+            <to uri="stream:out"/>
+            <log id="logInfo1" message="Testing eurex route log writer" />
+        </route>
+        <route id="lion-route">
+            <from uri="timer:hello?period={{timer.period}}"/>
+            <to uri="bean:myBean2?method=saySomething"/>
+            <!--bean ref="myBean" method="saySomething"/-->
+            <to uri="stream:out"/>
+            <log id="logInfo2" message="Testing lion route log writer" />
+        </route>
+    </camelContext>
+</beans>
