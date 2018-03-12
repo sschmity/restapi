@@ -27,5 +27,9 @@
             <to uri="stream:out"/>
             <log id="logInfo2" message="Testing lion route log writer" />
         </route>
+        <route>
+            <from uri="seda:testingInternalQueue"/>
+            <to uri="stream:out"/>
+        </route>
     </camelContext>
 </beans>
