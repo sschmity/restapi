@@ -23,7 +23,7 @@ public class SampleBean {
     public SampleBean(String aSay) {
         say = aSay;
     }
-    public SampleBean() {};
+    public SampleBean() {}
 
     public String saySomething() {
         LOGGER.info("Testing logger information");
