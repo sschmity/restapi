@@ -38,5 +38,4 @@ public class RestEurexController {
             .ok()
             .body("Done");
     }
-
 }
