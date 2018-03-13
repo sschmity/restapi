@@ -12,35 +12,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.camel.CamelContext;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/restsvc")
 public class RestEurexController {
     @Autowired
     CamelContext camelContext;
     TestingInternalQueueProcessor internalQueueProcessor;
+
     @GetMapping(path = "/eurex", produces = MediaType.APPLICATION_XML_VALUE)
     public String getShowEurex() {
-        return  "<Eurex/>";
+        return "<Eurex/>";
     }
+
     @GetMapping(path = "/eurex2", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getShowEurex2() {
-        return  ResponseEntity.ok().body("<eurex><inx att='1'/></eurex>");
+        return ResponseEntity.ok().body("<eurex><inx att='1'/></eurex>");
     }
+
     // Handler method to consume XML request and produce text response
-    @PostMapping(path = "/post/xml", consumes = MediaType.APPLICATION_XML_VALUE,
-        produces = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> postXML(@RequestBody
-        String body,
-        @RequestHeader(value = "MSG_TYP_ID", required = false) String headerMsgTypId,
-        @RequestHeader(value = "Content-Type", required = false) String contentTypId)
+    @PostMapping(path = "/post/xml", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> postXML(
+        @RequestBody
+            String body,
+        @RequestHeader
+            Map<String, String> headers)
+
+    //        @RequestHeader(value = "MSG_TYP_ID", required = false) String headerMsgTypId,
+    //        @RequestHeader(value = "Content-Type", required = false) String contentTypId)
     {
         System.out.println(body);
-        System.out.println(headerMsgTypId);
-        // Process request
-        //....
+        headers.forEach((k,v)->System.out.println(k + " " + v));
         camelContext.createProducerTemplate().sendBody("seda:testingInternalQueue", body);
-        return ResponseEntity
-            .ok()
-            .body("Done");
+        return ResponseEntity.ok().header("MSG_TYP_ID", "MT535").body("Done");
     }
 }
