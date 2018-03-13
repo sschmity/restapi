@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.camel.CamelContext;
@@ -29,8 +30,12 @@ public class RestEurexController {
     @PostMapping(path = "/post/xml", consumes = MediaType.APPLICATION_XML_VALUE,
         produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> postXML(@RequestBody
-        String body) {
+        String body,
+        @RequestHeader(value = "MSG_TYP_ID", required = false) String headerMsgTypId,
+        @RequestHeader(value = "Content-Type", required = false) String contentTypId)
+    {
         System.out.println(body);
+        System.out.println(headerMsgTypId);
         // Process request
         //....
         camelContext.createProducerTemplate().sendBody("seda:testingInternalQueue", body);

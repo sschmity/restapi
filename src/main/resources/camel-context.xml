@@ -29,6 +29,7 @@
         </route>
         <route>
             <from uri="seda:testingInternalQueue"/>
+            <log id="logInfo3" message="curl post message in seda" />
             <to uri="stream:out"/>
         </route>
     </camelContext>
